@@ -16,7 +16,7 @@ namespace coral {
 
 class TcpClient {
 public:
-    using UrlParser = std::function<std::pair<std::string, std::string>(std::string_view url)>;
+    using UrlParser = std::function<std::pair<std::string, std::string>(const std::string& url)>;
 
     TcpClient(asio::io_context::executor_type executor):
         socket_(std::make_shared<asio::ip::tcp::socket>(executor)),
@@ -29,7 +29,7 @@ public:
         parser_ = parser;
     }
 
-    async_simple::coro::Lazy<std::error_code>connect(std::string_view url) {
+    async_simple::coro::Lazy<std::error_code>connect(const std::string& url) {
         auto [host, port] = parser_(url);
         std::error_code ec = co_await coro_io::async_connect(&executor_, *socket_, host, port);
         co_return ec;

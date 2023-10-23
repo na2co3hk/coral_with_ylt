@@ -22,18 +22,18 @@ public:
     }
 
     template<typename T>
-    void append(const std::string_view token, T&& object) {
+    void append(std::string_view token, T&& object) {
         box_[token] = std::forward<T>(object);
     }
 
-    void pop(const std::string_view token) {
+    void pop(std::string_view token) {
         if (box_.find(token) != box_.end()){
             box_.erase(token);
         }
     }
 
     template<typename T>
-    T& get(const std::string_view token) {
+    T& get(std::string_view token) {
         if (box_.find(token) != box_.end()){
             return box_[token].cast<T>();
         }

@@ -116,23 +116,23 @@ public:
         }
     }
 
-    void Debug(const std::string_view msg) {
+    void Debug(std::string_view msg) {
         std::cout << LogMessage(msg).toString(CRLOG_LEVEL::DEBUG);
     }
 
-    void Info(const std::string_view msg) {
+    void Info(std::string_view msg) {
         std::cout << LogMessage(msg).toString(CRLOG_LEVEL::INFO);
     }
 
-    void Warn(const std::string_view msg) {
+    void Warn(std::string_view msg) {
         std::cout << LogMessage(msg).toString(CRLOG_LEVEL::WARN);
     }
 
-    void Error(const std::string_view msg) {
+    void Error(std::string_view msg) {
         std::cout << LogMessage(msg).toString(CRLOG_LEVEL::ERROR);
     }
 
-    void Fatal(const std::string_view msg) {
+    void Fatal(std::string_view msg) {
         std::cout << LogMessage(msg).toString(CRLOG_LEVEL::FATAL);
     }
 

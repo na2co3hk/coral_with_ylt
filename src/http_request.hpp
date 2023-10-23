@@ -64,7 +64,7 @@ public:
         return headers_;
     }
 
-    Request& setParams(const std::string key, const std::string val) {
+    Request& setParams(const std::string& key, const std::string& val) {
         params_[key] = val;
         return *this;
     }

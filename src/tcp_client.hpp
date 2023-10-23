@@ -50,10 +50,12 @@ public:
         co_return co_await coro_io::async_write(*socket_, asio::buffer(data, len));
     }
 
-    async_simple::coro::Lazy<std::pair<std::error_code, size_t>>write(coral::Buffer& buffer) {
-        auto [ec, send_len] = co_await coro_io::async_write(*socket_, asio::buffer(buffer.peek(), buffer.readableBytes()));
-        buffer_.moveReader(send_len);
-        co_return std::make_pair(ec, send_len);
+    async_simple::coro::Lazy<std::pair<std::error_code, size_t>>write(const std::string& msg) {
+        co_return co_await coro_io::async_write(*socket_, asio::buffer(msg.data(), msg.size()));
+    }
+
+    coral::Buffer& get_buffer() {
+        return buffer_;
     }
 
 private:

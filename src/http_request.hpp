@@ -197,8 +197,8 @@ private:
             return;
         }
 
-        body_ += line;
-        state_ = FINISH;
+        body_ += line + "\r\n";
+//        state_ = FINISH;
     }
 
     void parseParams(const std::string& line) {

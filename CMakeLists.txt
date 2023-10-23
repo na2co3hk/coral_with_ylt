@@ -21,5 +21,5 @@ include_directories(yalantinglibs/include/ylt/thirdparty)
 
 include_directories(src)
 
-#add_executable(coral_with_ylt main.cpp)
+add_executable(coral_with_ylt main.cpp src/tcp_client.hpp)
 

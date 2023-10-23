@@ -13,35 +13,35 @@
 namespace coral {
 
 //any box
-    class Box : noncopyable {
-    public:
+class Box : noncopyable {
+public:
 
-        static Box& instance() {
-            static Box instance;
-            return instance;
+    static Box& instance() {
+        static Box instance;
+        return instance;
+    }
+
+    template<typename T>
+    void append(const std::string_view token, T&& object) {
+        box_[token] = std::forward<T>(object);
+    }
+
+    void pop(const std::string_view token) {
+        if (box_.find(token) != box_.end()){
+            box_.erase(token);
         }
+    }
 
-        template<typename T>
-        void append(const std::string_view token, T&& object) {
-            box_[token] = std::forward<T>(object);
+    template<typename T>
+    T& get(const std::string_view token) {
+        if (box_.find(token) != box_.end()){
+            return box_[token].cast<T>();
         }
+    }
 
-        void pop(const std::string_view token) {
-            if (box_.find(token) != box_.end()){
-                box_.erase(token);
-            }
-        }
-
-        template<typename T>
-        T& get(const std::string_view token) {
-            if (box_.find(token) != box_.end()){
-                return box_[token].cast<T>();
-            }
-        }
-
-    private:
-        std::unordered_map<std::string_view, var>box_;
-    };
+private:
+    std::unordered_map<std::string_view, var>box_;
+};
 
 } //namespace coral
 

@@ -12,8 +12,8 @@ REFLECTION(Message, code, msg);
 
 int main() {
     coral::log.Info("start server");
-    coral::TcpServer server(std::thread::hardware_concurrency(), 5134);
-    server.run();
+//    coral::TcpServer server(std::thread::hardware_concurrency(), 5134);
+//    server.run();
     coral::Router& r = coral::Router::instance();
 
     using namespace coral;
@@ -27,8 +27,8 @@ int main() {
           rsp.write("hello world");
     });
 
-//    HTTPServer server(20, 5134);
-//    server.run();
+    HTTPServer server(2, 5134);
+    server.run();
 //    using namespace cinatra;
 //    cinatra::coro_http_server server(std::thread::hardware_concurrency(), 5134);
 //    server.set_http_handler<GET>("/", [](coro_http_request& req, coro_http_response& rsp){

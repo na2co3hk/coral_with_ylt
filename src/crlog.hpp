@@ -15,6 +15,10 @@
 #include <time.h>
 #include <chrono>
 
+#include "common.hpp"
+#include "async_simple/coro/Lazy.h"
+#include "ylt/coro_io/coro_file.hpp"
+
 namespace coral {
 
 #define NONE         "\033[m"
@@ -81,23 +85,35 @@ private:
     std::chrono::high_resolution_clock::time_point time_;
 };
 
-class Logger : asio::noncopyable {
+class Logger : coral::noncopyable {
 public:
-
-    Logger() : asio::noncopyable() {}
 
     static Logger& instance() {
         static Logger instance;
         return instance;
     }
 
-    void Open(const std::string_view file) {
-
+    async_simple::coro::Lazy<bool> Open(std::string_view file, coro_io::open_mode flags = coro_io::open_mode::read,
+                                        coro_io::ExecutorWrapper<>* executor =
+                                        coro_io::get_global_block_executor()) {
+        clf_ = std::make_unique<coro_io::coro_file>(file, flags, executor);
+        co_return clf_->is_open();
     }
 
-    bool batchFlush() {
+    asio::awaitable<bool> batchFlush(coro_io::ExecutorWrapper<>* executor =
+            coro_io::get_global_block_executor()) {
+        
+    }
 
-        return true;
+    asio::awaitable<bool> listenFlush(coro_io::ExecutorWrapper<>* executor =
+            coro_io::get_global_block_executor()) {
+        coro_io::period_timer ticker(executor);
+
+        for (;;) {
+            ticker.expires_after(std::chrono::milliseconds(flushInterval));
+            co_await ticker.async_wait (asio::use_awaitable);
+            batchFlush();
+        }
     }
 
     void Debug(const std::string_view msg) {
@@ -121,7 +137,8 @@ public:
     }
 
 private:
-    std::stringstream buf_;
+    std::string buf_;
+    std::unique_ptr<coro_io::coro_file> clf_;
 };
 
 Logger& log = Logger::instance();

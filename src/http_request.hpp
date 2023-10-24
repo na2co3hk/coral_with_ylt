@@ -93,12 +93,18 @@ public:
 
     std::string serialize() {
         std::string req;
-        req += method_ + " " + path_ + " " + "HTTP/" + version_ + " " + "\r\n";
+        req += method_ + " " + path_ + " " + "HTTP/" + version_ + "\r\n";
+
         for(auto [key, value] : headers_) {
             req += key + ": " + value + "\r\n";
         }
+
         req += "\r\n";
-        req += body_;
+
+        if (!body_.empty()) {
+            req += body_;
+        }
+
         return req;
     }
 

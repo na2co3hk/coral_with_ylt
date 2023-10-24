@@ -86,11 +86,10 @@ namespace coral {
             if (!body_.empty()) {
                 state_ = FINISH;
             }
-
-            if (state_ != FINISH) {
-                coral::log.Error("Parse error");
-                return;
-            }
+//            if (state_ != FINISH) {
+//                coral::log.Error("Parse error");
+//                return;
+//            }
             if (code_ == 404) {
                 coral::log.Error("Parse error");
                 return;
@@ -103,7 +102,7 @@ namespace coral {
                 if (stat((path_).data(), &fileState_) < 0 or S_ISDIR(fileState_.st_mode) or code_ == 1) {
                     code_ = 404;
                 }
-                else if (!(fileState_.st_mode & S_IROTH)) { // û��Ȩ��
+                else if (!(fileState_.st_mode & S_IROTH)) {
                     code_ = 403;
                 }
                 else if (code_ == 0) {
@@ -125,7 +124,6 @@ namespace coral {
             buf_.append("HTTP/1.1 " + std::to_string(code_) + " " + status + "\r\n");
         }
 
-        //����Ӧͷд��������
         void addHeader() {
 
             for (auto header : headers_) {
@@ -162,7 +160,6 @@ namespace coral {
             }
         }
 
-        //�����Ӧͷ
         void setHeader(const std::string& key, const std::string& val) {
             headers_[key] = val;
         }
@@ -192,6 +189,10 @@ namespace coral {
 
         void setCode(int code) {
             code_ = code;
+        }
+
+        int getCode() const {
+            return code_;
         }
 
         void write(const std::string& msg) {

@@ -37,3 +37,35 @@
 ////    server.sync_start();
 //    return 0;
 //}
+
+#include "http_client.hpp"
+#include "ylt/coro_http/coro_http_client.hpp"
+
+async_simple::coro::Lazy<void>client_test() {
+    coral::HTTPClient cli;
+    coral::Response rsp = co_await cli.GET("http://www.baidu.com");
+    coral::log.Info(std::to_string(rsp.getCode()));
+    coral::log.Info(rsp.getHeader("Content-Type"));
+}
+
+async_simple::coro::Lazy<void> test_async_client() {
+    std::string uri = "http://www.baidu.com";
+
+    {
+        coro_http::coro_http_client client{};
+        auto data = co_await client.async_get(uri);
+        std::cout << data.status << std::endl;
+
+        data = co_await client.async_get(uri);
+        std::cout << data.status << std::endl;
+
+        data = co_await client.async_post(uri, "hello", coro_http::req_content_type::string);
+        std::cout << data.status << std::endl;
+    }
+}
+
+int main() {
+    coral::HTTPClient client;
+    async_simple::coro::syncAwait(client_test());
+    return 0;
+}

@@ -40,9 +40,9 @@ public:
         co_return ec;
     }
 
-    async_simple::coro::Lazy<std::pair<std::error_code, size_t>>read() {
-        auto [ec, recv_len] = co_await coro_io::async_read(*socket_, asio::buffer(buffer_.beginWrite(), buffer_.writableBytes()));
-        buffer_.moveWriter(recv_len);
+    async_simple::coro::Lazy<std::pair<std::error_code, size_t>>read(coral::Buffer& buffer) {
+        auto [ec, recv_len] = co_await coro_io::async_read(*socket_, asio::buffer(buffer.beginWrite(), buffer.writableBytes()));
+        buffer.moveWriter(recv_len);
         co_return std::make_pair(ec, recv_len);
     }
 
@@ -54,16 +54,22 @@ public:
         co_return co_await coro_io::async_write(*socket_, asio::buffer(msg.data(), msg.size()));
     }
 
-    coral::Buffer& get_buffer() {
-        return buffer_;
-    }
+    AUTO_GET_SET(schema, Schema);
+    AUTO_GET_SET(host, Host);
+    AUTO_GET_SET(port, Port);
+    AUTO_GET_SET(path, Path);
 
+    bool is_domain = false;
 private:
+
+    std::string schema;
+    std::string host;
+    std::string port;
+    std::string path = "/";
 
     coro_io::ExecutorWrapper<> executor_;
     std::shared_ptr<asio::ip::tcp::socket> socket_;
 
-    coral::Buffer buffer_{1024};
     UrlParser parser_;
 };
 

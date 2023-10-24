@@ -44,8 +44,6 @@
 async_simple::coro::Lazy<void>client_test() {
     coral::HTTPClient cli;
     coral::Response rsp = co_await cli.GET("http://www.baidu.com");
-    coral::log.Info(std::to_string(rsp.getCode()));
-    coral::log.Info(rsp.getHeader("Content-Type"));
 }
 
 int main() {

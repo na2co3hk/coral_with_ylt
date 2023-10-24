@@ -97,22 +97,26 @@ public:
                                         coro_io::ExecutorWrapper<>* executor =
                                         coro_io::get_global_block_executor()) {
         clf_ = std::make_unique<coro_io::coro_file>(file, flags, executor);
+
         co_return clf_->is_open();
     }
 
-    asio::awaitable<bool> batchFlush(coro_io::ExecutorWrapper<>* executor =
+    async_simple::coro::Lazy<void> batchFlush(coro_io::ExecutorWrapper<>* executor =
             coro_io::get_global_block_executor()) {
-        
+
+        auto ec = co_await clf_->async_write(buf_.data(), buf_.size());
+        if (ec) {
+            Error("fail to flush");
+        }
     }
 
-    asio::awaitable<bool> listenFlush(coro_io::ExecutorWrapper<>* executor =
+    async_simple::coro::Lazy<bool> listenFlush(coro_io::ExecutorWrapper<>* executor =
             coro_io::get_global_block_executor()) {
         coro_io::period_timer ticker(executor);
-
         for (;;) {
             ticker.expires_after(std::chrono::milliseconds(flushInterval));
-            co_await ticker.async_wait (asio::use_awaitable);
-            batchFlush();
+            co_await ticker.async_await();
+            co_await batchFlush(); //batch flush logs to disk
         }
     }
 

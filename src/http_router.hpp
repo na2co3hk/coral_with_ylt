@@ -50,7 +50,7 @@ public:
 
     ~RadixTree() {}
 
-    constexpr void insert(const std::string& key, const Handler& handler) {
+    void insert(const std::string& key, const Handler& handler) {
         if (key == "/") {
             root_->handler_ = handler;
         }
@@ -59,7 +59,7 @@ public:
         }
     }
 
-    constexpr void erase(const std::string& key) {
+    void erase(const std::string& key) {
         if (key == "/") {
             root_->handler_ = Handler();
         }

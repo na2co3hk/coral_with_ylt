@@ -11,6 +11,7 @@
 #include <functional>
 
 #include "io_buffer.hpp"
+#include "common.hpp"
 
 namespace coral {
 
